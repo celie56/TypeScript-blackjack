@@ -62,9 +62,11 @@ var Deck = (function () {
     };
     return Deck;
 })();
+// This is a single player class, it shall hold all info
+// specific to that player
 var Player = (function () {
     function Player(s) {
-        this.hand = [];
+        this.hand = []; // and their hands, cool
         this.name = s;
         this.emptyHand();
     }
@@ -95,9 +97,11 @@ var Player = (function () {
     };
     return Player;
 })();
+// This container shall hold all current players and will
+// handle information for all of them
 var PlayerContainer = (function () {
     function PlayerContainer() {
-        this.data = [];
+        this.data = []; // who's playing?
         this.addPlayer('Dealer');
     }
     PlayerContainer.prototype.addPlayer = function (s) {
@@ -120,8 +124,88 @@ var PlayerContainer = (function () {
     };
     return PlayerContainer;
 })();
+// necessary includes: deck.ts player.ts
+// for interface activity include: ui.ts
 var deck = new Deck();
 var allPlayers = new PlayerContainer();
+// basic starting case
 allPlayers.addPlayer('user');
 allPlayers.firstDeal(deck);
 allPlayers.printAll();
+function activate(element) {
+    element.className = "btn active";
+}
+function deactivate(element) {
+    element.className = "btn disabled";
+}
+function updateUI() {
+    document.getElementById('dealerscore').innerHTML = "Dealer has: " + allPlayers.getPlayer(0).score().toString();
+    var dealercards = document.getElementById('dealercards');
+    dealercards.innerHTML = "";
+    allPlayers.getPlayer(0).hand.forEach(function (c) {
+        dealercards.innerHTML += "<p>" + c.val() + " of " + c.suit + "</p>";
+    });
+    document.getElementById('userscore').innerHTML = "User has: " + allPlayers.getPlayer(1).score().toString();
+    var usercards = document.getElementById('usercards');
+    usercards.innerHTML = "";
+    allPlayers.getPlayer(1).hand.forEach(function (c) {
+        usercards.innerHTML += "<p>" + c.val() + " of " + c.suit + "</p>";
+    });
+}
+function hitThat() {
+    if (hitButton.className == "btn active") {
+        allPlayers.getPlayer(1).addCard(deck.deal());
+        allPlayers.getPlayer(1).printHand(0);
+        updateUI();
+        if (allPlayers.getPlayer(1).score() > 21)
+            endGame();
+    }
+}
+function stayThere() {
+    if (stayButton.className == "btn active") {
+        endGame();
+    }
+}
+// while this function isn't necessarily part of ui,
+// it relies on ui functions and shouldn't be included
+// in the build if I'm not testing ui
+function newgame() {
+    deck = new Deck();
+    allPlayers = new PlayerContainer();
+    allPlayers.addPlayer('user');
+    allPlayers.firstDeal(deck);
+    updateUI();
+    activate(hitButton);
+    activate(stayButton);
+    document.getElementById('output').innerHTML = "";
+}
+function endGame() {
+    deactivate(hitButton);
+    deactivate(stayButton);
+    var outputtext = "";
+    if (allPlayers.getPlayer(1).score() > 21)
+        outputtext = "you bust";
+    else {
+        while (allPlayers.getPlayer(0).score() < 15 && allPlayers.getPlayer(0).score() < allPlayers.getPlayer(1).score())
+            allPlayers.getPlayer(0).addCard(deck.deal());
+        updateUI();
+        if (allPlayers.getPlayer(0).score() > 21)
+            outputtext = "dealer busts, you win";
+        else if (allPlayers.getPlayer(1).hand.length > 4)
+            outputtext = "My but what a large hand you have, you win.";
+        else if (allPlayers.getPlayer(0).score() >= allPlayers.getPlayer(1).score())
+            outputtext = "dealer wins";
+        else
+            outputtext = "you win!";
+    }
+    document.getElementById("output").innerHTML = "<p>" + outputtext + "</p><button class='btn active' onclick='newgame()'>New Game?</button>";
+}
+// button work
+var hitButton = document.getElementById('hitButton');
+activate(hitButton);
+hitButton.onclick = hitThat;
+var stayButton = document.getElementById('stayButton');
+activate(stayButton);
+stayButton.onclick = stayThere;
+// first run ui
+updateUI();

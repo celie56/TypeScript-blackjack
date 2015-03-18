@@ -7,16 +7,16 @@
 
 # This compile requires the most recent TypeScript compiler because
 # of syntax changes, mostly the ability to do -o
-TypeScriptCompiler:= nodejs ~/TypeScript/built/local/tc.js
+TypeScriptCompiler:= tsc
 output:= blackjack.js
 input:= deck.ts player.ts main.ts 
 ui:= ui.ts
 
 all:
-	$(TypeScriptCompiler) $(input) -o $(output)
+	$(TypeScriptCompiler) $(input) --out $(output)
 
 ui:
-	$(TypeScriptCompiler) $(input) $(ui) -o $(output)
+	$(TypeScriptCompiler) $(input) $(ui) --out $(output)
 
 run:
 	nodejs $(output)
