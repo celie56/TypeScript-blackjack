@@ -13,10 +13,10 @@ input:= deck.ts player.ts main.ts
 ui:= ui.ts
 
 all:
-	$(TypeScriptCompiler) $(input) --out $(output)
-
-ui:
 	$(TypeScriptCompiler) $(input) $(ui) --out $(output)
+
+no-ui:
+	$(TypeScriptCompiler) $(input) --out $(output)
 
 run:
 	nodejs $(output)

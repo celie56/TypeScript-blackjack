@@ -12,14 +12,16 @@ function updateUI(){
 	var dealercards: HTMLElement = document.getElementById('dealercards');
 	dealercards.innerHTML = "";
 	allPlayers.getPlayer(0).hand.forEach(function(c){
-		dealercards.innerHTML += "<p>" + c.val() + " of " + c.suit + "</p>";
+		dealercards.innerHTML += "<img src=\"images/" + c.val().toString().toLowerCase() + "_of_" + c.suit.toLowerCase() + ".png\" width=\"130\" height=\"150\">";
+		//dealercards.innerHTML += "<p>" + c.val() + " of " + c.suit + "</p>";
 	});
 	document.getElementById('userscore').innerHTML =
 		"User has: " + allPlayers.getPlayer(1).score().toString();
 	var usercards: HTMLElement = document.getElementById('usercards');
 	usercards.innerHTML = "";
 	allPlayers.getPlayer(1).hand.forEach(function(c){
-		usercards.innerHTML += "<p>" + c.val() + " of " + c.suit + "</p>";
+		//usercards.innerHTML += "<p>" + c.val() + " of " + c.suit + "</p>";
+		usercards.innerHTML += "<img src=\"images/" + c.val().toString().toLowerCase() + "_of_" + c.suit.toLowerCase() + ".png\" width=\"130\" height=\"150\">";
 	});
 }
 
